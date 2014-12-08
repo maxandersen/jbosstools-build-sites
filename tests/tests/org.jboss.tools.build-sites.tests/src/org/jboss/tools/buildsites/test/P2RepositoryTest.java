@@ -169,9 +169,9 @@ public class P2RepositoryTest {
 	}
 
 	@Test
-	public void noErrors() throws ProvisionException,
+	public void noErrorsLoadingContent() throws ProvisionException,
 			OperationCanceledException, URISyntaxException {
-		assertThat("Errors while loading", errors, IsEmptyCollection.empty());
+		assertThat("There should be no errors when loading from updatesite " + location, errors, IsEmptyCollection.empty());
 	}
 
 	@Test

@@ -20,40 +20,47 @@ import org.junit.runners.Parameterized.Parameters;
 public class P2ReferenceSiteTest extends P2RepositoryTest {
 
 	@Parameters(name = "{0} ref@{1}")
-	static public Collection<Object[]> getReferenceLocations() throws URISyntaxException, IOException {
+	static public Collection<Object[]> getReferenceLocations()
+			throws URISyntaxException, IOException {
 
 		IMetadataRepositoryManager repositoryManager = Activator
 				.getRepositoryManager();
 
 		List<Object[]> result = new ArrayList<Object[]>();
-		
+
 		Map<String, List<String>> entries = new HashMap<String, List<String>>();
-		for(String rootLocation : getRootLocations()) {
+		for (String rootLocation : getRootLocations()) {
 
 			ArrayList<IStatus> errors = new ArrayList<IStatus>();
 			HashMap<URI, IMetadataRepository> allrepositories = new HashMap<URI, IMetadataRepository>();
 
-			 IMetadataRepository repository = loadRepository(repositoryManager, allrepositories,
-					new URI(rootLocation), false, errors, textProgressMontior());
-			 
-			 for(IRepositoryReference ref : repository.getReferences()) {
-				 List<String> existing = entries.get(ref.getLocation().toString());
-				 if(existing==null) {
-					 existing = new ArrayList<String>();
-				 }
-				 existing.add(rootLocation);
-				 entries.put(ref.getLocation().toString(), existing);				 
-			 }	 
-		}		
-		
-		for(Entry<String, List<String>> entry: entries.entrySet()) {
-		 result.add(new Object[] { entry.getKey(), entry.getValue() });
+			IMetadataRepository repository = loadRepository(repositoryManager,
+					allrepositories, new URI(rootLocation), false, errors,
+					textProgressMontior());
+
+			if (repository == null) {
+				System.out.println(rootLocation
+						+ " already loaded before. Skipping.");
+			} else {
+				for (IRepositoryReference ref : repository.getReferences()) {
+					List<String> existing = entries.get(ref.getLocation()
+							.toString());
+					if (existing == null) {
+						existing = new ArrayList<String>();
+					}
+					existing.add(rootLocation);
+					entries.put(ref.getLocation().toString(), existing);
+				}
+			}
+		}
+
+		for (Entry<String, List<String>> entry : entries.entrySet()) {
+			result.add(new Object[] { entry.getKey(), entry.getValue() });
 		}
 		return result;
 	}
-				
-	@Parameter(value=1)
-	public List<String> rootLocations;
-	
-}	
 
+	@Parameter(value = 1)
+	public List<String> rootLocations;
+
+}
